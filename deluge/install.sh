@@ -3,11 +3,29 @@ apt-get install -y software-properties-common \
 	&& apt-get update \
 	&& apt-get install -y deluged deluge-web \
 	&& apt-get clean \
-	&& adduser --system  --gecos "Deluge Service" --disabled-password --group --home /var/lib/deluge deluge
-	&& sudo mkdir -p /var/lib/deluge/config/ \
+	&& adduser --system  --gecos "Deluge Service" --disabled-password --group --home /home/deluge deluge
 	&& sudo mkdir -p /var/log/deluge \
 	&& sudo chown -R deluge:deluge /var/log/deluge \
-	&& sudo chmod -R 750 /var/log/deluge
+	&& sudo chmod -R 750 /var/log/deluge \
+	&& sudo mkdir -p /home/deluge/downloading \
+	&& sudo mkdir -p /home/deluge/seeding \
+	&& sudo mkdir -p /home/deluge/watch \ 
+	&& sudo mkdir -p /home/deluge/torrentfiles \
+	&& sudo chown -R deluge:deluge /home/deluge
+
+rm -f /home/deluge/.config/deluge/deluge.pid
+
+if [ ! -f /home/deluge/.config/deluge/auth ]; then
+    echo "auth not found, creating"
+    sudo mkdir -p /home/deluge/.config/deluge \
+	&& echo \"deluge:deluge-pass:10\" > /home/deluge/.config/deluge/auth
+fi
+
+if [ ! -f /home/deluge/.config/deluge/core.conf ]; then
+    echo "config not found, creating"
+    sudo mkdir -p /home/deluge/.config/deluge && cp ./core.conf /home/deluge/.config/deluge/core.conf
+    chown deluge:deluge /home/deluge/.config/deluge/core.conf
+fi
 
 
 sudo tee /etc/systemd/system/deluged.service <<-'EOF'
@@ -21,7 +39,7 @@ User=deluge
 Group=deluge
 UMask=022
 
-ExecStart=/usr/bin/deluged -d -c /var/lib/deluge/config/ -l /var/log/deluge/daemon.log -L info
+ExecStart=/usr/bin/deluged -d -c /home/deluge/.config/ -l /var/log/deluge/daemon.log -L info
 
 Restart=on-failure
 
@@ -46,7 +64,7 @@ User=deluge
 Group=deluge
 UMask=027
 
-ExecStart=/usr/bin/deluge-web -c /var/lib/deluge/config/ -l /var/log/deluge/web.log -L info
+ExecStart=/usr/bin/deluge-web -c /home/deluge/.config/ -l /var/log/deluge/web.log -L info
 
 Restart=on-failure
 
