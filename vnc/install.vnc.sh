@@ -1,6 +1,6 @@
 #!/bin/bash
 ### Script to install and setup VNC on Odroid C2 running Ubuntu 16.04
-### maintained by Rajat
+### maintained by Aunlead
 
 # SET FOLLOWING VALUES
 # VNC password

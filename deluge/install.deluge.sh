@@ -4,6 +4,7 @@
 
 # SET FOLLOWING VALUES
 DELUGE_PASSWORD=yourDELUGEpasswordHERE
+MOUNT_POINT=/mnt/Seedbox
 
  apt-get install -y software-properties-common \
 	&& add-apt-repository ppa:deluge-team/ppa \
@@ -41,9 +42,9 @@ sudo tee /etc/systemd/system/deluged.service <<-'EOF'
 Description=Deluge Bittorrent Client Daemon
 After=network-online.target
 # Unit starts after the following mounts are available. Check using systemctl -t mount
-RequiresMountsFor=xyz.mount 
+RequiresMountsFor=${MOUNT_POINT}
 # Unit is stopped when any of these mounts disappear.
-BindsTo=xyz.mount
+BindsTo=${MOUNT_POINT}
 
 [Service]
 Type=simple
@@ -69,9 +70,9 @@ sudo tee /etc/systemd/system/deluge-web.service <<-'EOF'
 Description=Deluge Bittorrent Client Web Interface
 After=network-online.target
 # Unit starts after the following mounts are available. Check using systemctl -t mount
-RequiresMountsFor=xyz.mount 
+RequiresMountsFor=${MOUNT_POINT} 
 # Unit is stopped when any of these mounts disappear.
-BindsTo=xyz.mount
+BindsTo=${MOUNT_POINT}
 
 [Service]
 Type=simple
