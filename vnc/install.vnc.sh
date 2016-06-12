@@ -1,12 +1,13 @@
+#!/bin/bash
 ### Script to install and setup VNC on Odroid C2 running Ubuntu 16.04
 ### maintained by Rajat
 
 # SET FOLLOWING VALUES
 # VNC password
-VNC_PASSWORD = yourVNCpasswordHERE
+VNC_PASSWORD=yourVNCpasswordHERE
 
-sudo apt-get install x11vnc
-sudo x11vnc -storepasswd $VNC_PASSWORD /etc/x11vnc.pass
+sudo apt-get install -y x11vnc
+sudo x11vnc -storepasswd ${VNC_PASSWORD} /etc/x11vnc.pass
 
 sudo tee /etc/systemd/system/x11vnc.service <<-'EOF'
 [Unit]
@@ -30,4 +31,10 @@ systemctl daemon-reload \
 && systemctl status x11vnc 
 
 echo mate-session >~/.xsession
-sudo service xrdp restart
+systemctl restart x11vnc
+
+echo 'Setting up firewall rules'
+ufw allow from 192.168.0.0/16  to any port 5900
+ufw limit 5900 comment 'VNC port'
+
+echo 'Setup complete.'
