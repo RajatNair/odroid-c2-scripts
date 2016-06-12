@@ -34,7 +34,8 @@ echo mate-session >~/.xsession
 systemctl restart x11vnc
 
 echo 'Setting up firewall rules'
+echo 'NOTE - Current firewall rules restricts IP range to 192.168.0.0/16'
 ufw allow from 192.168.0.0/16  to any port 5900
 ufw limit 5900 comment 'VNC port'
 
-echo 'Setup complete.'
+echo 'Setup complete. Connect using any VNC client to Odroid-C2-Port:5900'
