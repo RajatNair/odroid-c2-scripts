@@ -6,7 +6,9 @@
 # VNC password
 VNC_PASSWORD=yourVNCpasswordHERE
 
+sudo apt-get update
 sudo apt-get install -y x11vnc
+sudo apt-get clean
 sudo x11vnc -storepasswd ${VNC_PASSWORD} /etc/x11vnc.pass
 
 sudo tee /etc/systemd/system/x11vnc.service <<-'EOF'

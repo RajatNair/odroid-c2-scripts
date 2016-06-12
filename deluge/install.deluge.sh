@@ -32,10 +32,12 @@ fi
 if [ ! -f /home/deluge/.config/deluge/core.conf ]; then
     echo "config not found, creating"
     sudo mkdir -p /home/deluge/.config/deluge \
-	&& cp ./core.conf /home/deluge/.config/deluge/core.conf
+	&& cp ./core.conf /home/deluge/.config/deluge/core.conf # \
+	#&& cp ./web.conf /home/deluge/.config/deluge/web.conf \
+	#&& cp ./label.conf /home/deluge/.config/deluge/label.conf \
+	#&& cp ./scheduler.conf /home/deluge/.config/deluge/scheduler.conf \
     chown deluge:deluge /home/deluge/.config/deluge/core.conf
 fi
-
 
 sudo tee /etc/systemd/system/deluged.service <<-'EOF'
 [Unit]
@@ -96,3 +98,10 @@ systemctl daemon-reload \
 	&& systemctl enable /etc/systemd/system/deluge-web.service \
 	&& systemctl start deluge-web \
 	&& systemctl status deluge-web
+
+
+echo 'Adding firewall rules'
+ufw allow from 192.168.0.0/16  to any port 2222
+
+
+echo 'Setup complete.'
