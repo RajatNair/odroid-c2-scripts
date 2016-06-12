@@ -1,4 +1,11 @@
-apt-get install -y software-properties-common \
+#!/bin/bash
+### Script to install and setup Deluge on Odroid C2 running Ubuntu 16.04
+### maintained by Aunlead
+
+# SET FOLLOWING VALUES
+DELUGE_PASSWORD=yourDELUGEpasswordHERE
+
+ apt-get install -y software-properties-common \
 	&& add-apt-repository ppa:deluge-team/ppa \
 	&& apt-get update \
 	&& apt-get install -y deluged deluge-web \
@@ -18,12 +25,13 @@ rm -f /home/deluge/.config/deluge/deluge.pid
 if [ ! -f /home/deluge/.config/deluge/auth ]; then
     echo "auth not found, creating"
     sudo mkdir -p /home/deluge/.config/deluge \
-	&& echo \"deluge:deluge-pass:10\" > /home/deluge/.config/deluge/auth
+	&& echo \"deluge:"${DELUGE_PASSWORD}":10\" > /home/deluge/.config/deluge/auth
 fi
 
 if [ ! -f /home/deluge/.config/deluge/core.conf ]; then
     echo "config not found, creating"
-    sudo mkdir -p /home/deluge/.config/deluge && cp ./core.conf /home/deluge/.config/deluge/core.conf
+    sudo mkdir -p /home/deluge/.config/deluge \
+	&& cp ./core.conf /home/deluge/.config/deluge/core.conf
     chown deluge:deluge /home/deluge/.config/deluge/core.conf
 fi
 
@@ -32,6 +40,10 @@ sudo tee /etc/systemd/system/deluged.service <<-'EOF'
 [Unit]
 Description=Deluge Bittorrent Client Daemon
 After=network-online.target
+# Unit starts after the following mounts are available. Check using systemctl -t mount
+RequiresMountsFor=xyz.mount 
+# Unit is stopped when any of these mounts disappear.
+BindsTo=xyz.mount
 
 [Service]
 Type=simple
@@ -56,6 +68,10 @@ sudo tee /etc/systemd/system/deluge-web.service <<-'EOF'
 [Unit]
 Description=Deluge Bittorrent Client Web Interface
 After=network-online.target
+# Unit starts after the following mounts are available. Check using systemctl -t mount
+RequiresMountsFor=xyz.mount 
+# Unit is stopped when any of these mounts disappear.
+BindsTo=xyz.mount
 
 [Service]
 Type=simple
