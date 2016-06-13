@@ -4,49 +4,56 @@
 
 # SET FOLLOWING VALUES
 DELUGE_PASSWORD=yourDELUGEpasswordHERE
-MOUNT_POINT=/mnt/Seedbox
+#MOUNT_POINT=/mnt/Seedbox
+DELUGE_USER=deluge
 
  apt-get install -y software-properties-common \
 	&& add-apt-repository ppa:deluge-team/ppa \
 	&& apt-get update \
-	&& apt-get install -y deluged deluge-web \
-	&& apt-get clean \
-	&& adduser --system  --gecos "Deluge Service" --disabled-password --group --home /home/deluge deluge
-	&& sudo mkdir -p /var/log/deluge \
-	&& sudo chown -R deluge:deluge /var/log/deluge \
-	&& sudo chmod -R 750 /var/log/deluge \
-	&& sudo mkdir -p /home/deluge/downloading \
-	&& sudo mkdir -p /home/deluge/seeding \
-	&& sudo mkdir -p /home/deluge/watch \ 
-	&& sudo mkdir -p /home/deluge/torrentfiles \
-	&& sudo chown -R deluge:deluge /home/deluge
+	&& apt-get install -y deluged deluge-web 
 
-rm -f /home/deluge/.config/deluge/deluge.pid
-
-if [ ! -f /home/deluge/.config/deluge/auth ]; then
-    echo "auth not found, creating"
-    sudo mkdir -p /home/deluge/.config/deluge \
-	&& echo \"deluge:"${DELUGE_PASSWORD}":10\" > /home/deluge/.config/deluge/auth
+if id ${DELUGE_USER} >/dev/null 2>&1; then
+        echo "deluge user exists"
+else
+        echo "Creating user"
+	adduser --system  --gecos "Deluge Service" --disabled-password --group --home /home/deluge deluge
 fi
 
-if [ ! -f /home/deluge/.config/deluge/core.conf ]; then
+sudo mkdir -p /var/log/deluge 
+sudo chown -R deluge:deluge /var/log/deluge 
+sudo chmod -R 750 /var/log/deluge 
+sudo mkdir -p /home/deluge/downloading 
+sudo mkdir -p /home/deluge/seeding 
+sudo mkdir -p /home/deluge/watch 
+sudo mkdir -p /home/deluge/torrentfiles 
+
+#sudo rm -f /home/deluge/.config/deluge/deluge.pid
+
+if [ ! -f /home/deluge/.config/auth ]; then
+    echo "auth not found, creating"
+    sudo mkdir -p /home/deluge/.config \
+	&& echo \"deluge:"${DELUGE_PASSWORD}":10\" > /home/deluge/.config/auth
+fi
+
+if [ ! -f /home/deluge/.config/core.conf ]; then
     echo "config not found, creating"
-    sudo mkdir -p /home/deluge/.config/deluge \
-	&& cp ./core.conf /home/deluge/.config/deluge/core.conf # \
+    sudo mkdir -p /home/deluge/.config \
+	&& cp ./core.conf /home/deluge/.config/core.conf # \
 	#&& cp ./web.conf /home/deluge/.config/deluge/web.conf \
 	#&& cp ./label.conf /home/deluge/.config/deluge/label.conf \
 	#&& cp ./scheduler.conf /home/deluge/.config/deluge/scheduler.conf \
-    chown deluge:deluge /home/deluge/.config/deluge/core.conf
 fi
+
+sudo chown -R deluge:deluge /home/deluge
 
 sudo tee /etc/systemd/system/deluged.service <<-'EOF'
 [Unit]
 Description=Deluge Bittorrent Client Daemon
 After=network-online.target
 # Unit starts after the following mounts are available. Check using systemctl -t mount
-RequiresMountsFor=${MOUNT_POINT}
+#RequiresMountsFor=${MOUNT_POINT}
 # Unit is stopped when any of these mounts disappear.
-BindsTo=${MOUNT_POINT}
+#BindsTo=${MOUNT_POINT}
 
 [Service]
 Type=simple
@@ -72,9 +79,9 @@ sudo tee /etc/systemd/system/deluge-web.service <<-'EOF'
 Description=Deluge Bittorrent Client Web Interface
 After=network-online.target
 # Unit starts after the following mounts are available. Check using systemctl -t mount
-RequiresMountsFor=${MOUNT_POINT} 
+#RequiresMountsFor=${MOUNT_POINT} 
 # Unit is stopped when any of these mounts disappear.
-BindsTo=${MOUNT_POINT}
+#BindsTo=${MOUNT_POINT}
 
 [Service]
 Type=simple
@@ -102,6 +109,7 @@ systemctl daemon-reload \
 
 echo 'Adding firewall rules'
 ufw allow from 192.168.0.0/16  to any port 2222
+ufw allow from 192.168.0.0/16  to any port 8112
 
 
 echo 'Setup complete.'
