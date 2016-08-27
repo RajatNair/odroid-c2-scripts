@@ -18,7 +18,7 @@ Requires=display-manager.service
 After=display-manager.service
 
 [Service]
-ExecStart=/usr/bin/x11vnc -xkb -noxrecord -noxfixes -noxdamage -display :0 -auth guess -rfbauth /etc/x11vnc.pass
+ExecStart=/usr/bin/x11vnc -xkb -noxrecord -noxfixes -noxdamage -geometry 1920x1080 -display :0 -auth guess -rfbauth /etc/x11vnc.pass
 ExecStop=/usr/bin/killall x11vnc
 Restart=on-failure
 Restart-sec=2
