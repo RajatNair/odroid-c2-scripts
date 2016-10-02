@@ -1,6 +1,6 @@
 #!/bin/bash
 ### Script to install and setup x11vnc on Odroid C2 running DietPi.
-### With this setup, you can connect to existing session
+### With this setup, you can remotely connect to an existing desktop session
 ### maintained by Aunlead
 
 # SET FOLLOWING VALUES
