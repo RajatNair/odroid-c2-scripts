@@ -21,20 +21,20 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
 ###### 4. Change default SSH port and disable root login
 ```shell
 ## Lockdown - changing default ports
-nano /etc/ssh/sshd_config
+sudo nano /etc/ssh/sshd_config
 ## Disable root login
 PermitRootLogin no
 ## Change default SSH port to any random port (eg. 2230)
 Port 2230
 ## Lockdown - Firewall 
-ufw limit ssh/tcp
-ufw allow 2230/tcp
+sudo ufw limit ssh/tcp
+sudo ufw allow 2230/tcp
 sudo systemctl reload sshd
 ```
 ###### 5. Enable firewall
 ```shell
 # Allow Incoming SSH from Specific IP Address or Subnet
-ufw allow from 192.168.0.0/16  to any port 2230
-ufw limit 2230/tcp comment 'SSH port'
+sudo ufw allow from 192.168.0.0/16  to any port 2230
+sudo ufw limit 2230/tcp comment 'SSH port'
 sudo ufw enable && sudo ufw status
 ```
