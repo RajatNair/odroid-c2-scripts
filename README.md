@@ -22,7 +22,7 @@ sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
 nano /etc/ssh/sshd_config
 ## Disable root login
 PermitRootLogin no
-## Change default SSH port
+## Change default SSH port to any random port (eg. 2230)
 Port 2230
 ## Lockdown - Firewall 
 ufw limit ssh/tcp
