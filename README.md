@@ -2,7 +2,9 @@
 ###### 1. Harden Ubuntu
 ###### 2. Install scripts to setup specific softwares
 
-#### Initial Setup
+---
+
+### Initial Setup
 ###### 1. SSH to odroid-ip:22 (Default username and password - odroid)
 ###### 2. Change odroid password from default
 ```shell
