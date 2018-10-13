@@ -108,4 +108,4 @@ ufw allow from 192.168.0.0/16  to any port 2222
 ufw allow from 192.168.0.0/16  to any port 8112
 
 
-echo 'Setup complete.'
+echo 'Setup complete. Configure MOUNTPOINTS in SystemD.'
