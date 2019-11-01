@@ -35,7 +35,7 @@ load printers = no
 
 [Backups]
 comment = Backups
-path = /mnt/SeedboxIII/Backups
+path = /mnt/SeedboxV/Backups
 browseable = yes
 create mask = 0775
 directory mask = 0775
@@ -51,7 +51,7 @@ valid users = odroid
 writeable = yes
 
 [Seedbox]
-path = /mnt/SeedboxIII/odroid-torrentbox
+path = /mnt/SeedboxV/odroid-torrentbox
 browseable = yes
 create mask = 0775
 directory mask = 0775
@@ -59,7 +59,7 @@ valid users = odroid
 writeable = yes
 
 [Media]
-path = /mnt/SeedboxIII/Media
+path = /mnt/SeedboxV/Media
 browsable = yes
 writable = no
 guest ok = yes
