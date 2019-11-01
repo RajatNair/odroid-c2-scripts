@@ -15,11 +15,9 @@ sudo apt install -y mono-devel curl mediainfo
 cd /opt
 sudo curl -L -O $( curl -s https://api.github.com/repos/Radarr/Radarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 )
 sudo tar -xvzf Radarr.develop.*.linux.tar.gz
+sudo rm Radarr.*.linux.tar.gz
 
-mkdir -p ~/.radarr
-
-sudo chown -R odroid:odroid /opt/Radarr
-sudo chown -R odroid:odroid /home/odroid/.radarr/
+sudo chown -R $(whoami):$(whoami) /opt/Radarr
 
 sudo tee /etc/systemd/system/radarr.service <<-'EOF'
 [Unit]
@@ -29,7 +27,7 @@ After=syslog.target network.target
 User=odroid
 Group=odroid
 Type=simple
-ExecStart=/usr/bin/mono --debug /opt/Radarr/Radarr.exe -nobrowser -data=/home/odroid/.radarr/
+ExecStart=/usr/bin/mono /opt/Radarr/Radarr.exe -nobrowser -data=/home/odroid/radarr/
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
