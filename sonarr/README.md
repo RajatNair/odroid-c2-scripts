@@ -21,3 +21,7 @@ Try using Aptitude to resolve dependency issues -
 ```bash
 sudo aptitude install mono-complete
 ```
+OR
+```bash
+sudo apt install mono-complete
+```
